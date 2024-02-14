@@ -10,8 +10,10 @@ import frc.robot.subsystems.DriveSubsystem;
 
 import java.io.File;
 
+import edu.wpi.first.math.MathUtil;
 // import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
 // import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -49,7 +51,15 @@ public class RobotContainer {
         () -> driverXbox.getLeftY(),
         () -> driverXbox.getLeftX(),
         () ->driverXbox.getRawAxis(2));
+    
 
+         Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
+        () -> driverXbox.getLeftY(),
+        () -> driverXbox.getLeftX(),
+        () -> driverXbox.getRawAxis(2));
+
+    drivebase.setDefaultCommand(
+        !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
   }
 
   /**
