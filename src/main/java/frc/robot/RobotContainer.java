@@ -32,8 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(),
-      "swerve"));
+  private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   XboxController driverXbox = new XboxController(OperatorConstants.kDriverControllerPort);
 
   /**
