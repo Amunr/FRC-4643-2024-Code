@@ -11,7 +11,7 @@
     },
     "encoder": {
       "type": "ctre_mag",
-      "id": 12,
+      "id": 8,
       "canbus": null
     },
     "inverted": {
@@ -21,7 +21,7 @@
     "absoluteEncoderInverted": false,
     "absoluteEncoderOffset": 0,
     "location": {
-      "front": -12,
-      "left": 12
+      "front": -13,
+      "left": 13
     }
   }
