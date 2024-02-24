@@ -7,7 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 // import frc.robot.commands.Autos;
 import frc.robot.subsystems.DriveSubsystem;
-
+import frc.robot.subsystems.intakeSubsystem;
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj.RobotBase;
 // import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
@@ -33,14 +35,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  private intakeSubsystem m_IntakeSubsystem = new intakeSubsystem();
   XboxController driverXbox = new XboxController(OperatorConstants.kDriverControllerPort);
+  XboxController operatorXbox = new XboxController(OperatorConstants.kOperatorControllerPort);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the trigger bindings
-    // configureBindings();
+   configureBindings();
     Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
         () -> driverXbox.getLeftY(),
         () -> driverXbox.getLeftX(),
@@ -76,12 +81,10 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-  
+    new JoystickButton(operatorXbox, XboxController.Button.kLeftBumper.value).onTrue(
+      new InstantCommand(m_IntakeSubsystem::StartIntake)
+    );
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-    // pressed,
-    // cancelling on release.
   }
 
   /**
