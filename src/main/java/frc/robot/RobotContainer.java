@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -83,6 +84,7 @@ public class RobotContainer {
   private void configureBindings() {
       new JoystickButton(operatorXbox, 5).onTrue(
         new SequentialCommandGroup( new InstantCommand(m_IntakeSubsystem::StartIntake)
+//       new WaitUntilCommand(m_sensors::intakeBreak)
         )
         );
 
