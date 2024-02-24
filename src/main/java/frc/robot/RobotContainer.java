@@ -18,10 +18,11 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,13 +40,12 @@ public class RobotContainer {
   XboxController driverXbox = new XboxController(OperatorConstants.kDriverControllerPort);
   XboxController operatorXbox = new XboxController(OperatorConstants.kOperatorControllerPort);
 
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the trigger bindings
-   configureBindings();
+    configureBindings();
     Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
         () -> driverXbox.getLeftY(),
         () -> driverXbox.getLeftX(),
@@ -54,16 +54,16 @@ public class RobotContainer {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
         () -> driverXbox.getLeftY(),
         () -> driverXbox.getLeftX(),
-        () ->driverXbox.getRawAxis(2));
-    
+        () -> driverXbox.getRawAxis(2));
 
-         Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
+    Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
         () -> driverXbox.getLeftY(),
         () -> driverXbox.getLeftX(),
         () -> driverXbox.getRawAxis(2));
 
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+
   }
 
   /**
@@ -81,9 +81,10 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    new JoystickButton(operatorXbox, XboxController.Button.kLeftBumper.value).onTrue(
-      new InstantCommand(m_IntakeSubsystem::StartIntake)
-    );
+      new JoystickButton(operatorXbox, 5).onTrue(
+        new SequentialCommandGroup( new InstantCommand(m_IntakeSubsystem::StartIntake)
+        )
+        );
 
   }
 
