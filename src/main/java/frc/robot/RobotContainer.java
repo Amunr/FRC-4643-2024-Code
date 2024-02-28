@@ -43,6 +43,7 @@ public class RobotContainer {
   private intakeSubsystem m_IntakeSubsystem = new intakeSubsystem();
   private indexerSubystem m_IndexerSubystem = new indexerSubystem();
   private shooterSubystem m_ShooterSubystem = new shooterSubystem();
+  private Sensors m_Sensors = new Sensors();
   XboxController driverXbox = new XboxController(OperatorConstants.kDriverControllerPort);
   XboxController operatorXbox = new XboxController(OperatorConstants.kOperatorControllerPort);
 
@@ -89,12 +90,13 @@ public class RobotContainer {
   private void configureBindings() {
       new JoystickButton(operatorXbox, 5).onTrue(
         new SequentialCommandGroup( new InstantCommand(m_IntakeSubsystem::StartIntake),
-        new WaitUntilCommand(Sensors.intakeBeamBreak.getVoltage() > 1),
+        new WaitUntilCommand(m_Sensors.intakeBeamBreakStatus),
         new InstantCommand(m_IndexerSubystem::startIndexer),
         new WaitCommand(.5),
         new InstantCommand(m_IntakeSubsystem::endIntake),
-        new WaitUntilCommand(Sensors.shooterBeamBreak.getVoltage() > 1),
+        new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus),
         new InstantCommand(m_IndexerSubystem::stopIndexer)
+
         )
         );
 

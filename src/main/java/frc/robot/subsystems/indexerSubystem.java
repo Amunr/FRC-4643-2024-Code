@@ -11,7 +11,7 @@ public class indexerSubystem {
         indexMotor.set(0.1);
     }
     public void stopIndexer(){
-        indexMotor.set(0);
+        indexMotor.stopMotor();
     }
     public void reverseIndexer(){
         indexMotor.set(-0.1);

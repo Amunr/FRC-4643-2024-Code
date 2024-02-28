@@ -12,6 +12,6 @@ public class intakeSubsystem {
         intakeMotor.set(0.1);
     }
     public void endIntake(){
-        intakeMotor.set(0);
+        intakeMotor.stopMotor();
     }
 }
