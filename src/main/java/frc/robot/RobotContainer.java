@@ -8,6 +8,9 @@ import frc.robot.Constants.OperatorConstants;
 // import frc.robot.commands.Autos;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.intakeSubsystem;
+import frc.robot.subsystems.shooterSubystem;
+import frc.robot.subsystems.indexerSubystem;
+
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
@@ -24,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.Sensors;
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -38,6 +41,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private intakeSubsystem m_IntakeSubsystem = new intakeSubsystem();
+  private indexerSubystem m_IndexerSubystem = new indexerSubystem();
+  private shooterSubystem m_ShooterSubystem = new shooterSubystem();
   XboxController driverXbox = new XboxController(OperatorConstants.kDriverControllerPort);
   XboxController operatorXbox = new XboxController(OperatorConstants.kOperatorControllerPort);
 
@@ -83,8 +88,13 @@ public class RobotContainer {
    */
   private void configureBindings() {
       new JoystickButton(operatorXbox, 5).onTrue(
-        new SequentialCommandGroup( new InstantCommand(m_IntakeSubsystem::StartIntake)
-//       new WaitUntilCommand(m_sensors::intakeBreak)
+        new SequentialCommandGroup( new InstantCommand(m_IntakeSubsystem::StartIntake),
+        new WaitUntilCommand(Sensors.intakeBeamBreak.getVoltage() > 1),
+        new InstantCommand(m_IndexerSubystem::startIndexer),
+        new WaitCommand(.5),
+        new InstantCommand(m_IntakeSubsystem::endIntake),
+        new WaitUntilCommand(Sensors.shooterBeamBreak.getVoltage() > 1),
+        new InstantCommand(m_IndexerSubystem::stopIndexer)
         )
         );
 
