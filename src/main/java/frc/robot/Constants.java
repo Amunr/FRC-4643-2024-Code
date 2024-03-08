@@ -19,9 +19,11 @@ public final class Constants {
   }
   public static class motorConstants {
     public static final int kIntakeMotorPort = 10;
-    public static final int kIndexerMotorPort = 11;
-    public static final int kshooterLeftPort = 12;
-    public static final int kshooterRightPort = 13; 
+    public static final int kIndexerLeftMotorPort = 11;
+    public static final int kIndexerRightMotorPort = 12;
+    public static final int kShooter = 13; 
+    public static final int kclimberLeftPort = 14;
+    public static final int kclimberRightPort = 15;
   }
   public static class portConstants {
     public static final int intakeBeamBreak = 1;

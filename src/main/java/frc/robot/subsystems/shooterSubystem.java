@@ -4,15 +4,12 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import frc.robot.Constants.motorConstants;
 public class shooterSubystem {
-    private CANSparkMax rightMotor = new CANSparkMax(motorConstants.kshooterRightPort, MotorType.kBrushed);
-    private CANSparkMax leftMotor = new CANSparkMax(motorConstants.kshooterLeftPort, MotorType.kBrushed);
+    private CANSparkMax shooterMotor = new CANSparkMax(motorConstants.kShooter, MotorType.kBrushless);
 
     public void StartShooter() {
-        rightMotor.set(0.1);
-        leftMotor.set(0.1);
+        shooterMotor.set(0.1);
     }
     public void stopShooter(){
-        rightMotor.stopMotor();
-        leftMotor.stopMotor();
+        shooterMotor.stopMotor();
     }
 }

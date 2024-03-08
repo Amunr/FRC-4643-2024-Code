@@ -5,15 +5,21 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.Constants.motorConstants;
 public class indexerSubystem {
-    private CANSparkMax indexMotor = new CANSparkMax(motorConstants.kIndexerMotorPort, MotorType.kBrushless);
+    private CANSparkMax leftIndexerMotor = new CANSparkMax(motorConstants.kIndexerLeftMotorPort, MotorType.kBrushless);
+    private CANSparkMax rightIndexerMotor = new CANSparkMax(motorConstants.kIndexerRightMotorPort, MotorType.kBrushless);
 
     public void startIndexer(){
-        indexMotor.set(0.1);
+        leftIndexerMotor.set(0.1);
+        rightIndexerMotor.set(0.1);
     }
     public void stopIndexer(){
-        indexMotor.stopMotor();
+        leftIndexerMotor.stopMotor();
+                rightIndexerMotor.stopMotor();
+
     }
     public void reverseIndexer(){
-        indexMotor.set(-0.1);
+        leftIndexerMotor.set(-0.1);
+        rightIndexerMotor.set(-0.1);
+
     }
 }

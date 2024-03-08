@@ -100,6 +100,20 @@ public class RobotContainer {
         )
         );
 
+        
+    new JoystickButton(operatorXbox, 1).onTrue(
+new InstantCommand(m_ShooterSubystem::StartShooter)
+        );
+         new JoystickButton(operatorXbox, 2).onTrue(
+new InstantCommand(m_ShooterSubystem::stopShooter)
+        );
+         new JoystickButton(operatorXbox, 6).onTrue(
+            new SequentialCommandGroup(new InstantCommand(m_IndexerSubystem::startIndexer),
+new WaitCommand(2),
+new InstantCommand(m_ShooterSubystem::stopShooter))
+
+        );
+
   }
 
   /**
