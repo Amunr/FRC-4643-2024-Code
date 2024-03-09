@@ -29,4 +29,10 @@ public final class Constants {
     public static final int intakeBeamBreak = 1;
     public static final int shooterBeamBreak = 2;
   }
+  public static class shooterConstants {
+    public static final double kProportoinal = 0.001;
+    public static final double kIntegral = 0;
+    public static final double kDerivative = 0;
+
+  }
 }
