@@ -11,7 +11,10 @@ public class intakeSubsystem {
     public void StartIntake() {
         intakeMotor.set(0.5);
     }
-    public void endIntake(){
+    public void stopIntake(){
         intakeMotor.stopMotor();
+    }
+    public void reverseIntake(){
+        intakeMotor.set(-0.5);
     }
 }

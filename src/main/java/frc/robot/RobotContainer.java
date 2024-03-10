@@ -14,6 +14,7 @@ import frc.robot.subsystems.indexerSubystem;
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.Time;
 // import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -89,11 +90,11 @@ public class RobotContainer {
    */
   private void configureBindings() {
       new JoystickButton(operatorXbox, 5).onTrue(
-        new SequentialCommandGroup( new InstantCommand(m_IntakeSubsystem::StartIntake),
-        new WaitUntilCommand(m_Sensors.intakeBeamBreakStatus),
+        new SequentialCommandGroup( new InstantCommand(m_IntakeSubsystem::StartIntake), 
+        new WaitUntilCommand(m_Sensors.intakeBeamBreakStatus ),
         new InstantCommand(m_IndexerSubystem::startIndexer),
         new WaitCommand(.5),
-        new InstantCommand(m_IntakeSubsystem::endIntake),
+        new InstantCommand(m_IntakeSubsystem::stopIntake),
         new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus),
         new InstantCommand(m_IndexerSubystem::stopIndexer)
 
@@ -101,7 +102,7 @@ public class RobotContainer {
         );
 
      new JoystickButton(operatorXbox, 3).onTrue(new InstantCommand(m_IntakeSubsystem::StartIntake));
-         new JoystickButton(operatorXbox, 4).onTrue(new InstantCommand(m_IntakeSubsystem::endIntake));
+         new JoystickButton(operatorXbox, 4).onTrue(new InstantCommand(m_IntakeSubsystem::stopIntake));
 
         
     new JoystickButton(operatorXbox, 1).onTrue(

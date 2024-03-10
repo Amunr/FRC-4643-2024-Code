@@ -9,8 +9,8 @@ public class indexerSubystem {
     private CANSparkMax rightIndexerMotor = new CANSparkMax(motorConstants.kIndexerRightMotorPort, MotorType.kBrushless);
 
     public void startIndexer(){
-        leftIndexerMotor.set(0.1);
-        rightIndexerMotor.set(0.1);
+        leftIndexerMotor.set(0.5);
+        rightIndexerMotor.set(0.5);
     }
     public void stopIndexer(){
         leftIndexerMotor.stopMotor();
@@ -18,8 +18,8 @@ public class indexerSubystem {
 
     }
     public void reverseIndexer(){
-        leftIndexerMotor.set(-0.1);
-        rightIndexerMotor.set(-0.1);
+        leftIndexerMotor.set(-0.5);
+        rightIndexerMotor.set(-0.5);
 
     }
 }
