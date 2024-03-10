@@ -15,7 +15,7 @@ public class shooterSubystem {
     private PIDController shooterPID =  new PIDController(shooterConstants.kProportoinal, shooterConstants.kIntegral, shooterConstants.kDerivative);
 
     public void StartShooter() {
-        shooterMotor.set(shooterPID.calculate(shooterEncoder.getCountsPerRevolution(), 12000));
+     //   shooterMotor.set(shooterPID.calculate(shooterEncoder.getCountsPerRevolution(), 12000));
     }
     public void stopShooter(){
         shooterMotor.stopMotor();

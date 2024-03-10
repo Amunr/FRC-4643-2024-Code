@@ -100,6 +100,9 @@ public class RobotContainer {
         )
         );
 
+     new JoystickButton(operatorXbox, 3).onTrue(new InstantCommand(m_IntakeSubsystem::StartIntake));
+         new JoystickButton(operatorXbox, 4).onTrue(new InstantCommand(m_IntakeSubsystem::endIntake));
+
         
     new JoystickButton(operatorXbox, 1).onTrue(
 new InstantCommand(m_ShooterSubystem::StartShooter)
