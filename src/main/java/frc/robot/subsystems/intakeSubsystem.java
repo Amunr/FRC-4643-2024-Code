@@ -9,7 +9,7 @@ public class intakeSubsystem {
     private CANSparkMax intakeMotor = new CANSparkMax(motorConstants.kIntakeMotorPort, MotorType.kBrushless);
 
     public void StartIntake() {
-        intakeMotor.set(0.);
+        intakeMotor.set(0.5);
     }
     public void endIntake(){
         intakeMotor.stopMotor();
