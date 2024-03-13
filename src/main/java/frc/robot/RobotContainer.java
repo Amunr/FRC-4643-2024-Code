@@ -73,6 +73,8 @@ public class RobotContainer {
 
   }
 
+ 
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
@@ -104,21 +106,39 @@ public class RobotContainer {
 
         )
         );
-        
+        //Start Shooter Command
     new JoystickButton(operatorXbox, XboxController.Button.kA.value).onTrue(
 new InstantCommand(m_ShooterSubystem::StartShooter)
         );
+        //Stop Shooter Manual Command
          new JoystickButton(operatorXbox, XboxController.Button.kB.value).onTrue(
 new InstantCommand(m_ShooterSubystem::stopShooter)
         );
+        //Shoot the Ball
          new JoystickButton(operatorXbox, XboxController.Button.kRightBumper.value).onTrue(
             new SequentialCommandGroup(new InstantCommand(m_IndexerSubystem::startIndexer),
 new WaitCommand(2),
 new InstantCommand(m_ShooterSubystem::stopShooter))
 
         );
-    
+    //Reverse Intake
+        new JoystickButton(operatorXbox, XboxController.Button.kY.value).onTrue(
+            new InstantCommand(m_IntakeSubsystem::reverseIntake)
+        ); 
+        //Manual Commands
+          Trigger dpadUpTrigger = new Trigger(() -> operatorXbox.getPOV() == 0);
+  dpadUpTrigger.onTrue(new InstantCommand(m_IntakeSubsystem::StartIntake));
+            Trigger dpadRighTrigger = new Trigger(() -> operatorXbox.getPOV() == 90);
+  dpadRighTrigger.onTrue(new InstantCommand(m_IndexerSubystem::startIndexer));
+            Trigger dpadDownTrigger = new Trigger(() -> operatorXbox.getPOV() == 180);
+  dpadDownTrigger.onTrue(new InstantCommand(m_IntakeSubsystem::stopIntake));
+            Trigger dpadLefTrigger = new Trigger(() -> operatorXbox.getPOV() == 270);
+  dpadLefTrigger.onTrue(new InstantCommand(m_IndexerSubystem::stopIndexer));
   }
+
+
+
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
