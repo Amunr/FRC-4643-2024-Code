@@ -10,16 +10,35 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.motorConstants;
 import frc.robot.Constants.shooterConstants;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-public class shooterSubystem {
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+public class shooterSubystem extends SubsystemBase {
     private CANSparkMax shooterMotor = new CANSparkMax(motorConstants.kShooter, MotorType.kBrushless);
     private RelativeEncoder shooterEncoder = shooterMotor.getEncoder();
 
-    private PIDController  shooterPID =  new PIDController(shooterConstants.kProportoinal, shooterConstants.kIntegral, shooterConstants.kDerivative);
-    private SimpleMotorFeedforward shooterFeedforward  = new SimpleMotorFeedforward(shooterConstants.kStaticGain, shooterConstants.kVoltage);
+    private PIDController shooterPID = new PIDController(
+        shooterConstants.kProportoinal, shooterConstants.kIntegral,
+            shooterConstants.kDerivative);
+    private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(
+        shooterConstants.kStaticGain, shooterConstants.kVoltage);
+
+    public boolean shooterEnabled = false;
+
     public void StartShooter() {
-     shooterMotor.set(shooterPID.calculate(shooterEncoder.getCountsPerRevolution(), 12000));
+        shooterEnabled = true;
     }
-    public void stopShooter(){
-        shooterMotor.stopMotor();
+
+    @Override
+    public void periodic() {
+        if (shooterEnabled) {
+            shooterMotor.set(shooterPID.calculate(shooterEncoder.getVelocity(), 4000)
+                    + shooterFeedforward.calculate(shooterEncoder.getVelocity()));
+        } else {
+            shooterMotor.stopMotor();
+        }
     }
+
+    public void stopShooter() {
+        shooterEnabled = false;
+    }
+
 }
