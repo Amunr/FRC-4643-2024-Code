@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 // import frc.robot.commands.Autos;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.climberSubsystem;
 import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.subsystems.shooterSubystem;
 import frc.robot.subsystems.indexerSubystem;
@@ -44,11 +45,12 @@ import frc.robot.Sensors;
 public class RobotContainer {
         
     // The robot's subsystems and commands are defined here...
-    private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+    // private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
     private intakeSubsystem m_IntakeSubsystem = new intakeSubsystem();
     private indexerSubystem m_IndexerSubystem = new indexerSubystem();
     private shooterSubystem m_ShooterSubystem = new shooterSubystem();
     private Sensors m_Sensors = new Sensors();
+    private climberSubsystem m_ClimberSubsystem = new climberSubsystem();
     XboxController driverXbox = new XboxController(OperatorConstants.kDriverControllerPort);
     public static XboxController operatorXbox = new XboxController(OperatorConstants.kOperatorControllerPort);
 
@@ -80,6 +82,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("shoot", shoot);
         NamedCommands.registerCommand("intake", intake);
         configureBindings();
+
+        /* 
         Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
                 () -> driverXbox.getLeftY(),
                 () -> driverXbox.getLeftX(),
@@ -97,9 +101,8 @@ public class RobotContainer {
 
         drivebase.setDefaultCommand(
                 !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-
+*/
     }
-
     /**
      * Use this method to define your trigger->command mappings. Triggers can be
      * created via the
@@ -125,6 +128,8 @@ public class RobotContainer {
                                 new InstantCommand(m_IntakeSubsystem::stopIntake),
                                 new InstantCommand(m_IndexerSubystem::stopIndexer))),
                 new InstantCommand(m_IntakeSubsystem::stopIntake),
+                new InstantCommand(m_IndexerSubystem::reverseIndexer),
+                new WaitUntilCommand(m_Sensors.shooterBeamBreakStatusINV),
                 new InstantCommand(m_IndexerSubystem::stopIndexer)
 
         ));
@@ -143,7 +148,8 @@ public class RobotContainer {
         );
         // Reverse Intake
         new JoystickButton(operatorXbox, XboxController.Button.kY.value).onTrue(
-                new InstantCommand(m_IntakeSubsystem::reverseIntake));
+                new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::reverseIntake),
+                new InstantCommand(m_IndexerSubystem::reverseIndexer)));
         // Manual Commands
         Trigger dpadUpTrigger = new Trigger(() -> operatorXbox.getPOV() == 0);
         dpadUpTrigger.onTrue(new InstantCommand(m_IntakeSubsystem::StartIntake));

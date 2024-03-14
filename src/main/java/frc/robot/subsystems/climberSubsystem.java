@@ -15,7 +15,7 @@ public class climberSubsystem extends SubsystemBase {
         if(speed_control < 0.1  & speed_control >-0.1 ){
             leftClimberMotor.stopMotor();
         } else { 
-            leftClimberMotor.set(speed_control);
+            leftClimberMotor.set(speed_control * 0.1);
         }
     }
 
@@ -23,7 +23,7 @@ public class climberSubsystem extends SubsystemBase {
         if(speed_control < 0.1  & speed_control >-0.1 ){
             rightClimberMotor.stopMotor();
         } else { 
-            rightClimberMotor.set(speed_control);
+            rightClimberMotor.set(-speed_control * 0.1);
         }
 
     }

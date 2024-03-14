@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Sensors;
+import frc.robot.Constants.shooterConstants;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to
@@ -93,15 +95,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-   SmartDashboard.putNumber("Proportional", 0.0020645);
-    SmartDashboard.putNumber("integral", 0);
-    SmartDashboard.putNumber("derivative ", 0);
-    SmartDashboard.putNumber("FeedForward", 0);
-
-    SmartDashboard.putNumber("AProportional", 0.01);
-    SmartDashboard.putNumber("Aintegral", 0);
-    SmartDashboard.putNumber("Aderivative ", 0);
-    SmartDashboard.putNumber("AFeedForward", 0);
+   SmartDashboard.putNumber("test", 5);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
@@ -111,14 +105,14 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    double p1 = SmartDashboard.getNumber("Proportional", 0.0020645);
-    double i1 = SmartDashboard.getNumber("integral", 0);
-    double d1 = SmartDashboard.getNumber("derivative ", 0);
-    double f1 = SmartDashboard.getNumber("FeedForward", 0);
-    double p2 = SmartDashboard.getNumber("AProportional", 0.01);
-    double i2 = SmartDashboard.getNumber("Aintegral", 0);
-    double d2 = SmartDashboard.getNumber("Aderivative ", 0);
-    double f2 = SmartDashboard.getNumber("AFeedForward", 0);
+       SmartDashboard.putNumber("Beambreak", Sensors.shooterBeamBreak.getValue());
+       SmartDashboard.putNumber("P", 0.001);
+       SmartDashboard.putNumber("I", 0);
+       SmartDashboard.putNumber("D", 0);
+        shooterConstants.kProportoinal = SmartDashboard.getNumber("P", 0.001);
+             shooterConstants.kIntegral = SmartDashboard.getNumber("I", 0);
+shooterConstants.kDerivative =  SmartDashboard.getNumber("D", 0);
+
   }
 
   @Override

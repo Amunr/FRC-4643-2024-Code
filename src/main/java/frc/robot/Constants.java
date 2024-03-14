@@ -27,14 +27,15 @@ public final class Constants {
     public static final int kclimberLeftPort = 14;
     public static final int kclimberRightPort = 15;
   }
-  public static class portConstants {    public static final int shooterBeamBreak = 0;
+  public static class portConstants {   
+     public static final int shooterBeamBreak = 0;
   }
   public static class shooterConstants {
-    public static final double kProportoinal = 0.001;
-    public static final double kIntegral = 0;
-    public static final double kDerivative = 0;
-    public static final double kStaticGain = 0;
-    public static final double kVoltage = 0.00215;
+    public static double kProportoinal = 0.001;
+    public static double kIntegral = 0;
+    public static double kDerivative = 0;
+    public static final  double kStaticGain = 0.05;
+    public static final double kVoltage = 0.00115;
     public static final double kPIDTolerance = 0.05;
   }
 

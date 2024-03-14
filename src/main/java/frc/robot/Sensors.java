@@ -7,6 +7,8 @@ import frc.robot.Constants.portConstants;
 import frc.robot.subsystems.shooterSubystem;
 public class Sensors {
     public static AnalogInput shooterBeamBreak = new AnalogInput(portConstants.shooterBeamBreak);
-    public BooleanSupplier shooterBeamBreakStatus = () -> (shooterBeamBreak.getAverageVoltage() == 0 );
+    public BooleanSupplier shooterBeamBreakStatus = () -> (shooterBeamBreak.getValue() < 10 );
+    public BooleanSupplier shooterBeamBreakStatusINV = () -> (shooterBeamBreak.getValue() > 10 );
+
 }
 
