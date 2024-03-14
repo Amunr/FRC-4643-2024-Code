@@ -44,6 +44,7 @@ import frc.robot.Sensors;
 public class RobotContainer {
         
     // The robot's subsystems and commands are defined here...
+    private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
     private intakeSubsystem m_IntakeSubsystem = new intakeSubsystem();
     private indexerSubystem m_IndexerSubystem = new indexerSubystem();
     private shooterSubystem m_ShooterSubystem = new shooterSubystem();
@@ -59,17 +60,13 @@ public class RobotContainer {
         // Configure the trigger bindings
 
         // AUTO COMMANDS
-      final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-
-        Command intake = new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),
-                new WaitUntilCommand(m_Sensors.intakeBeamBreakStatus)
-                        .deadlineWith(new SequentialCommandGroup(new WaitCommand(5),
-                                new InstantCommand(m_IntakeSubsystem::stopIntake),
-                                new InstantCommand(m_IndexerSubystem::stopIndexer))),
+        Command intake = new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),  
                 new InstantCommand(m_IndexerSubystem::startIndexer),
                 new WaitCommand(.5),
+                new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus).deadlineWith(new SequentialCommandGroup(new WaitCommand(5),
+                                new InstantCommand(m_IntakeSubsystem::stopIntake),
+                                new InstantCommand(m_IndexerSubystem::stopIndexer))),
                 new InstantCommand(m_IntakeSubsystem::stopIntake),
-                new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus),
                 new InstantCommand(m_IndexerSubystem::stopIndexer)
 
         );
@@ -121,18 +118,16 @@ public class RobotContainer {
         // Main intake command
         NamedCommands.registerCommand(null, null);
         new JoystickButton(operatorXbox, XboxController.Button.kLeftBumper.value).onTrue(
-                new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),
-                        new WaitUntilCommand(m_Sensors.intakeBeamBreakStatus)
-                                .deadlineWith(new SequentialCommandGroup(new WaitCommand(5),
-                                        new InstantCommand(m_IntakeSubsystem::stopIntake),
-                                        new InstantCommand(m_IndexerSubystem::stopIndexer))),
-                        new InstantCommand(m_IndexerSubystem::startIndexer),
-                        new WaitCommand(.5),
-                        new InstantCommand(m_IntakeSubsystem::stopIntake),
-                        new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus),
-                        new InstantCommand(m_IndexerSubystem::stopIndexer)
+             new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),  
+                new InstantCommand(m_IndexerSubystem::startIndexer),
+                new WaitCommand(.5),
+                new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus).deadlineWith(new SequentialCommandGroup(new WaitCommand(5),
+                                new InstantCommand(m_IntakeSubsystem::stopIntake),
+                                new InstantCommand(m_IndexerSubystem::stopIndexer))),
+                new InstantCommand(m_IntakeSubsystem::stopIntake),
+                new InstantCommand(m_IndexerSubystem::stopIndexer)
 
-                ));
+        ));
         // Start Shooter Command
         new JoystickButton(operatorXbox, XboxController.Button.kA.value).onTrue(
                 new InstantCommand(m_ShooterSubystem::StartShooter));
