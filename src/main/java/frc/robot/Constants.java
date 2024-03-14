@@ -27,9 +27,7 @@ public final class Constants {
     public static final int kclimberLeftPort = 14;
     public static final int kclimberRightPort = 15;
   }
-  public static class portConstants {
-    public static final int intakeBeamBreak = 1;
-    public static final int shooterBeamBreak = 0;
+  public static class portConstants {    public static final int shooterBeamBreak = 0;
   }
   public static class shooterConstants {
     public static final double kProportoinal = 0.001;
