@@ -44,6 +44,7 @@ import frc.robot.Sensors;
 public class RobotContainer {
         
     // The robot's subsystems and commands are defined here...
+    private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
     private intakeSubsystem m_IntakeSubsystem = new intakeSubsystem();
     private indexerSubystem m_IndexerSubystem = new indexerSubystem();
     private shooterSubystem m_ShooterSubystem = new shooterSubystem();
@@ -80,8 +81,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("spinUpShooter", spinUpShooter);
         NamedCommands.registerCommand("shoot", shoot);
         NamedCommands.registerCommand("intake", intake);
-        final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-
+        drivebase.setupPathPlanner();
         configureBindings();
         Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
                 () -> driverXbox.getLeftY(),
