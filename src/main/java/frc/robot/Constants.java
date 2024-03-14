@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.util.PIDConstants;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -27,7 +29,7 @@ public final class Constants {
   }
   public static class portConstants {
     public static final int intakeBeamBreak = 1;
-    public static final int shooterBeamBreak = 2;
+    public static final int shooterBeamBreak = 0;
   }
   public static class shooterConstants {
     public static final double kProportoinal = 0.001;
@@ -37,4 +39,12 @@ public final class Constants {
     public static final double kVoltage = 0.00215;
     public static final double kPIDTolerance = 0.05;
   }
+
+  public static final class AutonConstants
+  {
+
+    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
+    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.4, 0, 0.01);
+  }
 }
+
