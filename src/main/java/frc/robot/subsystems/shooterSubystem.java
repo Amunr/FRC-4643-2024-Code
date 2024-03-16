@@ -38,9 +38,14 @@ public class shooterSubystem extends SubsystemBase {
                     SmartDashboard.putNumber("SpeedPID", shooterPIDVal);
                      SmartDashboard.putNumber("speedFeedForwad", shooterFeedForwardVar);
         if (shooterEnabled) {
-            shooterMotor.set(shooterPID.calculate(shooterEncoder.getVelocity(), 100)
-                   + shooterFeedforward.calculate(shooterEncoder.getVelocity()));
+            SmartDashboard.putString("Shooter", "ON");
+
+        //    shooterMotor.set(shooterPID.calculate(shooterEncoder.getVelocity(), 100)
+        //           + shooterFeedforward.calculate(shooterEncoder.getVelocity()));
+        shooterMotor.set(0.9);
         } else {
+            SmartDashboard.putString("Shooter", "OFF");
+
             shooterMotor.stopMotor();
         }
     }

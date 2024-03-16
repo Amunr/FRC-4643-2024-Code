@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3151581858719277,
-      "y": 5.572630034148957
+      "x": 1.0284843426829717,
+      "y": 6.948583040023223
     },
     "rotation": 0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Stage #1"
+            "pathName": "crossTheLineLeft"
           }
         }
       ]

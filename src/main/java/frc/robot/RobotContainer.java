@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Auto;
 // import frc.robot.commands.Autos;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.climberSubsystem;
@@ -13,6 +14,8 @@ import frc.robot.subsystems.shooterSubystem;
 import frc.robot.subsystems.indexerSubystem;
 
 import java.io.File;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -23,8 +26,10 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 // import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -42,18 +47,17 @@ import frc.robot.Sensors;
  * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
-        
+public class RobotContainer { 
     // The robot's subsystems and commands are defined here...
-    // private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+    private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
     private intakeSubsystem m_IntakeSubsystem = new intakeSubsystem();
     private indexerSubystem m_IndexerSubystem = new indexerSubystem();
     private shooterSubystem m_ShooterSubystem = new shooterSubystem();
+    private Auto m_Auto = new Auto();
     private Sensors m_Sensors = new Sensors();
     private climberSubsystem m_ClimberSubsystem = new climberSubsystem();
     XboxController driverXbox = new XboxController(OperatorConstants.kDriverControllerPort);
     public static XboxController operatorXbox = new XboxController(OperatorConstants.kOperatorControllerPort);
-
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -61,38 +65,48 @@ public class RobotContainer {
     public RobotContainer() {
         // Configure the trigger bindings
 
-        // AUTO COMMANDS
-        Command intake = new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),  
-                new InstantCommand(m_IndexerSubystem::startIndexer),
-                new WaitCommand(.5),
-                new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus).deadlineWith(new SequentialCommandGroup(new WaitCommand(5),
-                                new InstantCommand(m_IntakeSubsystem::stopIntake),
-                                new InstantCommand(m_IndexerSubystem::stopIndexer))),
-                new InstantCommand(m_IntakeSubsystem::stopIntake),
-                new InstantCommand(m_IndexerSubystem::stopIndexer)
+        //Autonmous drive forward
 
-        );
+        // AUTO COMMANDS
+
+          Command intake =   new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),  
+                   new InstantCommand(m_IndexerSubystem::startIndexer),
+                   new WaitCommand(.5),
+                   new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus).withTimeout(5),
+                   new InstantCommand(m_IntakeSubsystem::stopIntake),
+                   new InstantCommand(m_IndexerSubystem::reverseIndexer),
+                   new WaitUntilCommand(m_Sensors.shooterBeamBreakStatusINV),
+                   new InstantCommand(m_IndexerSubystem::stopIndexer));
+                   
         Command shoot = new SequentialCommandGroup(new InstantCommand(m_IndexerSubystem::startIndexer),
                 new WaitCommand(2),
                 new InstantCommand(m_ShooterSubystem::stopShooter));
 
-
         Command spinUpShooter = new InstantCommand(m_ShooterSubystem::StartShooter);
-        NamedCommands.registerCommand("spinUpShooter", spinUpShooter);
+
+        //Start PATH PLANNER
+        drivebase.setupPathPlanner();
+                NamedCommands.registerCommand("spinUpShooter", spinUpShooter);
         NamedCommands.registerCommand("shoot", shoot);
         NamedCommands.registerCommand("intake", intake);
+        SmartDashboard.putString("Intake", "OFF");
+        SmartDashboard.putString("Shooter", "OFF");
+                SmartDashboard.putString("Indexer", "OFF");
+
+      
+
         configureBindings();
 
-        /* 
+        
         Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-                () -> driverXbox.getLeftY(),
-                () -> driverXbox.getLeftX(),
+                () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),0.05 ),
+                () -> MathUtil.applyDeadband(driverXbox.getLeftY(),0.05),
                 () -> driverXbox.getRightX(),
-                () -> driverXbox.getRightY());
+                () -> -driverXbox.getRightY());
         Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
-                () -> driverXbox.getLeftY(),
-                () -> driverXbox.getLeftX(),
-                () -> driverXbox.getRawAxis(2));
+                () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.05),
+                () -> MathUtil.applyDeadband(driverXbox.getLeftY(), 0.05),
+                () -> driverXbox.getRawAxis(4));
 
         Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
                 () -> driverXbox.getLeftY(),
@@ -100,8 +114,7 @@ public class RobotContainer {
                 () -> driverXbox.getRawAxis(2));
 
         drivebase.setDefaultCommand(
-                !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-*/
+                !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
     }
     /**
      * Use this method to define your trigger->command mappings. Triggers can be
@@ -121,18 +134,16 @@ public class RobotContainer {
         // Main intake command
         NamedCommands.registerCommand(null, null);
         new JoystickButton(operatorXbox, XboxController.Button.kLeftBumper.value).onTrue(
-             new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),  
-                new InstantCommand(m_IndexerSubystem::startIndexer),
-                new WaitCommand(.5),
-                new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus).deadlineWith(new SequentialCommandGroup(new WaitCommand(5),
-                                new InstantCommand(m_IntakeSubsystem::stopIntake),
-                                new InstantCommand(m_IndexerSubystem::stopIndexer))),
-                new InstantCommand(m_IntakeSubsystem::stopIntake),
-                new InstantCommand(m_IndexerSubystem::reverseIndexer),
-                new WaitUntilCommand(m_Sensors.shooterBeamBreakStatusINV),
-                new InstantCommand(m_IndexerSubystem::stopIndexer)
-
-        ));
+                new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),  
+                   new InstantCommand(m_IndexerSubystem::startIndexer),
+                   new WaitCommand(.5),
+                   new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus).withTimeout(5),
+                   new InstantCommand(m_IntakeSubsystem::stopIntake),
+                   new InstantCommand(m_IndexerSubystem::reverseIndexer),
+                   new WaitUntilCommand(m_Sensors.shooterBeamBreakStatusINV),
+                   new InstantCommand(m_IndexerSubystem::stopIndexer)
+   
+           ));
         // Start Shooter Command
         new JoystickButton(operatorXbox, XboxController.Button.kA.value).onTrue(
                 new InstantCommand(m_ShooterSubystem::StartShooter));
@@ -143,7 +154,8 @@ public class RobotContainer {
         new JoystickButton(operatorXbox, XboxController.Button.kRightBumper.value).onTrue(
                 new SequentialCommandGroup(new InstantCommand(m_IndexerSubystem::startIndexer),
                         new WaitCommand(2),
-                        new InstantCommand(m_ShooterSubystem::stopShooter))
+                        new InstantCommand(m_ShooterSubystem::stopShooter),
+                        new InstantCommand(m_IndexerSubystem::stopIndexer))
 
         );
         // Reverse Intake
@@ -152,15 +164,15 @@ public class RobotContainer {
                 new InstantCommand(m_IndexerSubystem::reverseIndexer)));
         // Manual Commands
         Trigger dpadUpTrigger = new Trigger(() -> operatorXbox.getPOV() == 0);
-        dpadUpTrigger.onTrue(new InstantCommand(m_IntakeSubsystem::StartIntake));
+        dpadUpTrigger.onTrue(new InstantCommand(m_IntakeSubsystem::manualIntake));
         Trigger dpadRighTrigger = new Trigger(() -> operatorXbox.getPOV() == 90);
-        dpadRighTrigger.onTrue(new InstantCommand(m_IndexerSubystem::startIndexer));
+        dpadRighTrigger.onTrue(new InstantCommand(m_IndexerSubystem::manualIndexer));
         Trigger dpadDownTrigger = new Trigger(() -> operatorXbox.getPOV() == 180);
         dpadDownTrigger.onTrue(new InstantCommand(m_IntakeSubsystem::stopIntake));
         Trigger dpadLefTrigger = new Trigger(() -> operatorXbox.getPOV() == 270);
         dpadLefTrigger.onTrue(new InstantCommand(m_IndexerSubystem::stopIndexer));
     }
-
+    public void dataout () {    }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
