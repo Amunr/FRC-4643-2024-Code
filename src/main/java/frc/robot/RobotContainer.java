@@ -53,11 +53,12 @@ public class RobotContainer {
     private intakeSubsystem m_IntakeSubsystem = new intakeSubsystem();
     private indexerSubystem m_IndexerSubystem = new indexerSubystem();
     private shooterSubystem m_ShooterSubystem = new shooterSubystem();
-    private Auto m_Auto = new Auto();
+  //  private Auto m_Auto = new Auto();
     private Sensors m_Sensors = new Sensors();
     private climberSubsystem m_ClimberSubsystem = new climberSubsystem();
     XboxController driverXbox = new XboxController(OperatorConstants.kDriverControllerPort);
     public static XboxController operatorXbox = new XboxController(OperatorConstants.kOperatorControllerPort);
+    public static XboxController maintenanceController  = new XboxController(OperatorConstants.kMaintenaceControllerPort);
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -150,6 +151,8 @@ public class RobotContainer {
         // Stop Shooter Manual Command
         new JoystickButton(operatorXbox, XboxController.Button.kB.value).onTrue(
                 new InstantCommand(m_ShooterSubystem::stopShooter));
+        //Start INDEXER FAST COMMAND
+        new JoystickButton(operatorXbox, XboxController.Button.kX.value).onTrue(new InstantCommand(m_IndexerSubystem::startIndexer));
         // Shoot the Ball
         new JoystickButton(operatorXbox, XboxController.Button.kRightBumper.value).onTrue(
                 new SequentialCommandGroup(new InstantCommand(m_IndexerSubystem::startIndexer),
@@ -172,6 +175,7 @@ public class RobotContainer {
         Trigger dpadLefTrigger = new Trigger(() -> operatorXbox.getPOV() == 270);
         dpadLefTrigger.onTrue(new InstantCommand(m_IndexerSubystem::stopIndexer));
     }
+    
     public void dataout () {    }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

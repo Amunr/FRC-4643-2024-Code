@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Sensors;
 import frc.robot.Constants.shooterConstants;
 import frc.robot.subsystems.Auto;
+import frc.robot.subsystems.climberSubsystem;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to
@@ -81,7 +82,7 @@ public class Robot extends TimedRobot {
     // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
-      Auto.autoLeftCommand().schedule();
+    //  Auto.getAutonomousCommand().schedule();
   }
 
   /** This function is called periodically during autonomous. */
@@ -99,20 +100,14 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
    SmartDashboard.putNumber("test", 5);
 
-    if (m_autonomousCommand != null) {
-      Auto.autoLeftCommand().cancel();
-    }
+   // if (m_autonomousCommand != null) {
+    //  Auto.getAutonomousCommand().cancel();
+   // }
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-       SmartDashboard.putNumber("P", 0.001);
-       SmartDashboard.putNumber("I", 0);
-       SmartDashboard.putNumber("D", 0);
-        shooterConstants.kProportoinal = SmartDashboard.getNumber("P", 0.001);
-             shooterConstants.kIntegral = SmartDashboard.getNumber("I", 0);
-shooterConstants.kDerivative =  SmartDashboard.getNumber("D", 0);
 
   }
 
