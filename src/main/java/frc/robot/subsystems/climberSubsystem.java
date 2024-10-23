@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.RobotContainer;
+
 // LEFT FROM INTAKE
 public class climberSubsystem extends SubsystemBase {
      private static CANSparkMax leftClimberMotor = new CANSparkMax(motorConstants.kclimberLeftPort, MotorType.kBrushless);
@@ -44,7 +45,7 @@ public class climberSubsystem extends SubsystemBase {
         } else { 
             if(-speed_control > 0.1 && rightDistance < 250){
                 rightClimberMotor.set(-speed_control * 0.75);
-            } else if(-speed_control < -0.1 && rightDistance < 0){
+            } else if(-speed_control < -0.1 && rightDistance > 0){
             rightClimberMotor.set(-speed_control *0.75);
             } 
         }
@@ -70,7 +71,7 @@ public class climberSubsystem extends SubsystemBase {
         getEncoderStatus();
          double leftControl = RobotContainer.operatorXbox.getLeftY();
          leftClimberControl(leftControl);
-         double rightControl = RobotContainer.operatorXbox.getRightY();
+         double rightControl = RobotContainer.operatorXbox.getLeftY();
          rightClimberControl(rightControl);
          SmartDashboard.putNumber("LeftClimberEncoder", climberSubsystem.leftDistance);
          SmartDashboard.putNumber("RightClimberEncoder", climberSubsystem.rightDistance);
