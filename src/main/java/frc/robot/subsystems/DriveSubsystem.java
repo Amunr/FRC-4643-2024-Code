@@ -79,6 +79,20 @@ public class DriveSubsystem extends SubsystemBase {
           swerveDrive.getMaximumVelocity()));
     });
   }
+  //Auto drive
+  public Command autoDrive(double translationX, double translationY, double headingX,
+      float headingY) {
+    return run(() -> {
+      double xInput = Math.pow(translationX, 3); // Smooth controll out
+      double yInput = Math.pow(translationY, 3); // Smooth controll out
+      // Make the robot move
+      driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
+          headingX,
+          headingY,
+          swerveDrive.getYaw().getRadians(),
+          swerveDrive.getMaximumVelocity()));
+    });
+  }
 
   // Anuglar Velocity
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,

@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,6 +31,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private  Command driveauto;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -39,6 +44,10 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+          UsbCamera camera = CameraServer.startAutomaticCapture();
+        ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
+        driverTab.add("Camera", camera);
+
     }
 
   /**
@@ -70,7 +79,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-           SmartDashboard.putNumber("Beambreak", Sensors.shooterBeamBreak.getValue());
+           SmartDashboard.putNumber("shooterBeamBreak", Sensors.shooterBeamBreak.getValue());
+           SmartDashboard.putNumber("intakeBeamBreak", Sensors.intakeBeamBreak.getValue());
   }
 
   /**
@@ -88,7 +98,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-     
+   driveauto = m_robotContainer.getAutonomousCommand();
+    driveauto.schedule();
     
   }
 
@@ -99,6 +110,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
    SmartDashboard.putNumber("test", 5);
+   driveauto.cancel();
 
    // if (m_autonomousCommand != null) {
     //  Auto.getAutonomousCommand().cancel();

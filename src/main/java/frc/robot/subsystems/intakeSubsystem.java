@@ -31,4 +31,5 @@ public class intakeSubsystem {
 
         intakeMotor.set(-0.5);
     }
+
 }

@@ -30,6 +30,7 @@ public final class Constants {
   }
   public static class portConstants {   
      public static final int shooterBeamBreak = 0;
+     public static final int intakeBeamBreak = 1;
   }
   public static class shooterConstants {
     public static double kProportoinal = 0.001;

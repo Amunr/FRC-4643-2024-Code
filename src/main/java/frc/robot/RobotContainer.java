@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -67,35 +68,35 @@ public class RobotContainer {
         // Configure the trigger bindings
 
         //Autonmous drive forward
-
+        
+        
         // AUTO COMMANDS
-
-          Command intake =   new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),  
-                   new InstantCommand(m_IndexerSubystem::startIndexer),
-                   new WaitCommand(.5),
-                   new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus).withTimeout(5),
-                   new InstantCommand(m_IntakeSubsystem::stopIntake),
-                   new InstantCommand(m_IndexerSubystem::reverseIndexer),
-                   new WaitUntilCommand(m_Sensors.shooterBeamBreakStatusINV),
-                   new InstantCommand(m_IndexerSubystem::stopIndexer));
+        //   Command intake =   new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),  
+        //            new InstantCommand(m_IndexerSubystem::startIndexer),
+        //            new WaitCommand(.5),
+        //            new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus).withTimeout(5),
+        //            new InstantCommand(m_IntakeSubsystem::stopIntake),
+        //            new InstantCommand(m_IndexerSubystem::reverseIndexer),
+        //            new WaitUntilCommand(m_Sensors.shooterBeamBreakStatusINV),
+        //            new InstantCommand(m_IndexerSubystem::stopIndexer));
                    
-        Command shoot = new SequentialCommandGroup(new InstantCommand(m_IndexerSubystem::startIndexer),
-                new WaitCommand(2),
-                new InstantCommand(m_ShooterSubystem::stopShooter));
+        // Command shoot = new SequentialCommandGroup(new InstantCommand(m_IndexerSubystem::startIndexer),
+        //         new WaitCommand(2),
+        //         new InstantCommand(m_ShooterSubystem::stopShooter));
 
-        Command spinUpShooter = new InstantCommand(m_ShooterSubystem::StartShooter);
+        // Command spinUpShooter = new InstantCommand(m_ShooterSubystem::StartShooter);
 
         //Start PATH PLANNER
         drivebase.setupPathPlanner();
-                NamedCommands.registerCommand("spinUpShooter", spinUpShooter);
-        NamedCommands.registerCommand("shoot", shoot);
-        NamedCommands.registerCommand("intake", intake);
-        SmartDashboard.putString("Intake", "OFF");
-        SmartDashboard.putString("Shooter", "OFF");
-                SmartDashboard.putString("Indexer", "OFF");
+        //         NamedCommands.registerCommand("spinUpShooter", spinUpShooter);
+        // NamedCommands.registerCommand("shoot", shoot);
+        // NamedCommands.registerCommand("intake", intake);
+        // SmartDashboard.putString("Intake", "OFF");
+        // SmartDashboard.putString("Shooter", "OFF");
+        //         SmartDashboard.putString("Indexer", "OFF");
 
       
-
+        //Drive Controls
         configureBindings();
 
         
@@ -116,7 +117,12 @@ public class RobotContainer {
 
         drivebase.setDefaultCommand(
                 !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
+
+        
+
     }
+
+    final Command driveLowAuto = drivebase.autoDrive(0.1, 0.1, 0, 0);
     /**
      * Use this method to define your trigger->command mappings. Triggers can be
      * created via the
@@ -132,51 +138,65 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        // Main intake command
-        NamedCommands.registerCommand(null, null);
-        new JoystickButton(operatorXbox, XboxController.Button.kLeftBumper.value).onTrue(
+                //Release Game object / Reverse intake
+                new Trigger(() -> operatorXbox.getLeftTriggerAxis() > 0.3).whileTrue(new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::reverseIntake),
+                new InstantCommand(m_IndexerSubystem::reverseIndexer),
+                new InstantCommand(m_Sensors::noGameObject))).onFalse(new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::stopIntake),
+           new InstantCommand(m_IndexerSubystem::stopIndexer))); ;
+                // Prepare to fire
+                new Trigger(() -> operatorXbox.getRightTriggerAxis() > 0.3).whileTrue(new InstantCommand(m_ShooterSubystem::StartShooter)).onFalse(new InstantCommand(m_ShooterSubystem::stopShooter)); 
+        // Intake
+                new JoystickButton(operatorXbox, XboxController.Button.kLeftBumper.value).whileTrue(
                 new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),  
                    new InstantCommand(m_IndexerSubystem::startIndexer),
-                   new WaitCommand(.5),
-                   new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus).withTimeout(5),
+                   new WaitUntilCommand(m_Sensors.shooterBeamBreakStatus),
                    new InstantCommand(m_IntakeSubsystem::stopIntake),
                    new InstantCommand(m_IndexerSubystem::reverseIndexer),
                    new WaitUntilCommand(m_Sensors.shooterBeamBreakStatusINV),
-                   new InstantCommand(m_IndexerSubystem::stopIndexer)
+                   new InstantCommand(m_IndexerSubystem::stopIndexer),
+                   new InstantCommand(m_Sensors::yesGameobject)
    
-           ));
-        // Start Shooter Command
-        new JoystickButton(operatorXbox, XboxController.Button.kA.value).onTrue(
-                new InstantCommand(m_ShooterSubystem::StartShooter));
-        // Stop Shooter Manual Command
-        new JoystickButton(operatorXbox, XboxController.Button.kB.value).onTrue(
-                new InstantCommand(m_ShooterSubystem::stopShooter));
-        //Start INDEXER FAST COMMAND
-        new JoystickButton(operatorXbox, XboxController.Button.kX.value).onTrue(new InstantCommand(m_IndexerSubystem::startIndexer));
-        // Shoot the Ball
-        new JoystickButton(operatorXbox, XboxController.Button.kRightBumper.value).onTrue(
+           )).onFalse(new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::stopIntake),
+           new InstantCommand(m_IndexerSubystem::stopIndexer))); 
+               // Shoot the Ball
+        new JoystickButton(operatorXbox, XboxController.Button.kRightBumper.value).whileTrue(
                 new SequentialCommandGroup(new InstantCommand(m_IndexerSubystem::startIndexer),
-                        new WaitCommand(2),
-                        new InstantCommand(m_ShooterSubystem::stopShooter),
-                        new InstantCommand(m_IndexerSubystem::stopIndexer))
+                new InstantCommand(m_Sensors::noGameObject))).onFalse(
+                new SequentialCommandGroup(new InstantCommand(m_ShooterSubystem::stopShooter),
+                        new InstantCommand(m_IndexerSubystem::stopIndexer)));
+        // Start Shooter Command
 
-        );
-        // Reverse Intake
-        new JoystickButton(operatorXbox, XboxController.Button.kY.value).onTrue(
-                new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::reverseIntake),
-                new InstantCommand(m_IndexerSubystem::reverseIndexer)));
-        // Manual Commands
-        Trigger dpadUpTrigger = new Trigger(() -> operatorXbox.getPOV() == 0);
-        dpadUpTrigger.onTrue(new InstantCommand(m_IntakeSubsystem::manualIntake));
-        Trigger dpadRighTrigger = new Trigger(() -> operatorXbox.getPOV() == 90);
-        dpadRighTrigger.onTrue(new InstantCommand(m_IndexerSubystem::manualIndexer));
-        Trigger dpadDownTrigger = new Trigger(() -> operatorXbox.getPOV() == 180);
-        dpadDownTrigger.onTrue(new InstantCommand(m_IntakeSubsystem::stopIntake));
-        Trigger dpadLefTrigger = new Trigger(() -> operatorXbox.getPOV() == 270);
-        dpadLefTrigger.onTrue(new InstantCommand(m_IndexerSubystem::stopIndexer));
-    }
+
+
+                //MANUAL
+        
+        // Stop Shooter Manual Command
+        // new JoystickButton(operatorXbox, XboxController.Button.kB.value).onTrue(
+        //         new InstantCommand(m_ShooterSubystem::stopShooter));
+        //Start INDEXER FAST COMMAND
+        // new JoystickButton(operatorXbox, XboxController.Button.kX.value).onTrue(new InstantCommand(m_IndexerSubystem::startIndexer));
+
+
+        // NEW manual
+          new Trigger(() -> operatorXbox.getPOV() == 0).whileTrue(new InstantCommand(m_IntakeSubsystem::manualIntake)).onFalse(new InstantCommand(m_IntakeSubsystem::stopIntake));
+           new Trigger(() -> operatorXbox.getPOV() == 90).whileTrue(new InstantCommand(m_IndexerSubystem::manualIndexer)).onFalse(new InstantCommand(m_IntakeSubsystem::stopIntake));
+        new Trigger(() -> operatorXbox.getPOV() == 180).whileTrue(new InstantCommand(m_IntakeSubsystem::reverseIntake)).onFalse(new InstantCommand(m_IntakeSubsystem::stopIntake));
+         new Trigger(() -> operatorXbox.getPOV() == 270).whileTrue(new InstantCommand(m_IndexerSubystem::reverseIndexer)).onFalse(new InstantCommand(m_IntakeSubsystem::stopIntake));
+        //STOP ALL
+                new JoystickButton(operatorXbox, XboxController.Button.kB.value).onTrue(new SequentialCommandGroup(
+                new InstantCommand(m_ShooterSubystem::stopShooter), 
+                new InstantCommand(m_IntakeSubsystem::stopIntake),
+                new InstantCommand(m_IndexerSubystem::stopIndexer)
+                ));
+        }
+
+        public Command getAutonomousCommand() {
+                return driveLowAuto;
+            }
     
-    public void dataout () {    }
+    public void dataout () { 
+        
+       }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
