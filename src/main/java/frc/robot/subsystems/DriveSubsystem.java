@@ -51,13 +51,13 @@ public class DriveSubsystem extends SubsystemBase {
   public SwerveDrive swerveDrive;
   public double maximumSpeed = Units.feetToMeters(18.5);
   public DriveSubsystem(File directory){
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.NONE;
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    swerveDrive.setHeadingCorrection(false);
+    swerveDrive.setHeadingCorrection(true);
     swerveDrive.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);
     
   }

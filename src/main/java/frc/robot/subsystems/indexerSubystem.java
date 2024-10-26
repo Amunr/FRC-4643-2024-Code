@@ -27,12 +27,12 @@ public class indexerSubystem {
     public void reverseIndexer(){
                                 SmartDashboard.putString("Indexer", "REVERSE");
 
-        leftIndexerMotor.set(0.1);
-        rightIndexerMotor.set(-0.1);
+        leftIndexerMotor.set(0.3);
+        rightIndexerMotor.set(-0.3);
 
     }
     public void manualIndexer(){
-        leftIndexerMotor.set(-.1);
-        rightIndexerMotor.set(0.1);
+        leftIndexerMotor.set(.1);
+        rightIndexerMotor.set(-0.1);
     }
 }

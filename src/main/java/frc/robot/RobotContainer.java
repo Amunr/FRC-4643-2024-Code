@@ -50,7 +50,7 @@ import frc.robot.Sensors;
  */
 public class RobotContainer { 
     // The robot's subsystems and commands are defined here...
-    private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+    private final DriveSubsystem drivebase = new DriveSubsystem(new File(Filesystem.getDeployDirectory(), "Swerve"));
     private intakeSubsystem m_IntakeSubsystem = new intakeSubsystem();
     private indexerSubystem m_IndexerSubystem = new indexerSubystem();
     private shooterSubystem m_ShooterSubystem = new shooterSubystem();
@@ -100,20 +100,7 @@ public class RobotContainer {
         configureBindings();
 
         
-        Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-                () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),0.05 ),
-                () -> MathUtil.applyDeadband(driverXbox.getLeftY(),0.05),
-                () -> driverXbox.getRightX(),
-                () -> -driverXbox.getRightY());
-        Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
-                () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.05),
-                () -> MathUtil.applyDeadband(driverXbox.getLeftY(), 0.05),
-                () -> driverXbox.getRawAxis(4));
-
-        Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
-                () -> driverXbox.getLeftY(),
-                () -> driverXbox.getLeftX(),
-                () -> driverXbox.getRawAxis(2));
+        
 
         drivebase.setDefaultCommand(
                 !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
@@ -121,6 +108,20 @@ public class RobotContainer {
         
 
     }
+   final Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
+                () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),0.05 ),
+                () -> MathUtil.applyDeadband(driverXbox.getLeftY(),0.05),
+                () -> driverXbox.getRightX(),
+                () -> -driverXbox.getRightY());
+       final Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
+                () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.05),
+                () -> MathUtil.applyDeadband(driverXbox.getLeftY(), 0.05),
+                () -> driverXbox.getRawAxis(4));
+
+       final Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
+                () -> driverXbox.getLeftY(),
+                () -> driverXbox.getLeftX(),
+                () -> driverXbox.getRawAxis(2));
 
     final Command driveLowAuto = drivebase.autoDrive(0.1, 0.1, 0, 0);
     /**

@@ -12,7 +12,8 @@ public class Sensors {
     public BooleanSupplier shooterBeamBreakStatusINV = () -> (shooterBeamBreak.getValue() > 10 );
     public BooleanSupplier intakeBeamBreakStatus = () -> (intakeBeamBreak.getValue() < 10);
     public BooleanSupplier intakeBeamBreakStatusINV = () -> (intakeBeamBreak.getValue() > 10 );
-    public boolean gameObject = true; 
+    public static boolean gameObject = true; 
+    //Don't use
     public static boolean getBeamBreakStatus(){
         if(shooterBeamBreak.getValue() < 10){
             return true;
@@ -27,6 +28,9 @@ public class Sensors {
     }
     public void noGameObject(){
         gameObject = false;
+    }
+    public boolean gameObjectStatus(){
+        return gameObject;
     }
 }
 
