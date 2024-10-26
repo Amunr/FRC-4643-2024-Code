@@ -27,7 +27,6 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import frc.robot.Constants.driveConstants;
 import com.revrobotics.RelativeEncoder;
-
 */
 //swerve lib imports
 import java.io.File;
@@ -57,12 +56,12 @@ public class DriveSubsystem extends SubsystemBase {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    swerveDrive.setHeadingCorrection(true);
+    swerveDrive.setHeadingCorrection(false);
     swerveDrive.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);
-    
+
   }
 
-  
+
 
   // Command to drive the robot using translative values and heading as a
   // setpoint.
@@ -80,19 +79,19 @@ public class DriveSubsystem extends SubsystemBase {
     });
   }
   //Auto drive
-  public Command autoDrive(double translationX, double translationY, double headingX,
-      float headingY) {
-    return run(() -> {
-      double xInput = Math.pow(translationX, 3); // Smooth controll out
-      double yInput = Math.pow(translationY, 3); // Smooth controll out
-      // Make the robot move
-      driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
-          headingX,
-          headingY,
-          swerveDrive.getYaw().getRadians(),
-          swerveDrive.getMaximumVelocity()));
-    });
-  }
+  // public Command autoDrive(double translationX, double translationY, double headingX,
+  //     float headingY) {
+  //   return run(() -> {
+  //     double xInput = Math.pow(translationX, 3); // Smooth controll out
+  //     double yInput = Math.pow(translationY, 3); // Smooth controll out
+  //     // Make the robot move
+  //     driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
+  //         headingX,
+  //         headingY,
+  //         swerveDrive.getYaw().getRadians(),
+  //         swerveDrive.getMaximumVelocity()));
+  //   });
+  // }
 
   // Anuglar Velocity
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
@@ -117,7 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(translationX.getAsDouble(),
                                                                       translationY.getAsDouble(),
                                                                       rotation.getAsDouble() * Math.PI,
-                                                                      swerveDrive.getOdometryHeading().getRadians(),
+                                                                      (swerveDrive.getOdometryHeading().getRadians()-(Math.PI/2)),
                                                                       swerveDrive.getMaximumVelocity()));
     });
   }
@@ -201,5 +200,4 @@ public class DriveSubsystem extends SubsystemBase {
     // Create a path following command using AutoBuilder. This will also trigger event markers.
     return new PathPlannerAuto(pathName);
   }
-
 }

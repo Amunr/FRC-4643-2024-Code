@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private  Command driveauto;
+  // private  Command driveauto;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -47,7 +47,6 @@ public class Robot extends TimedRobot {
           UsbCamera camera = CameraServer.startAutomaticCapture();
         ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
         driverTab.add("Camera", camera);
-    driveauto = m_robotContainer.getAutonomousCommand();
     }
 
   /**
@@ -93,16 +92,14 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     //  Auto.getAutonomousCommand().schedule();
-    driveauto.schedule();
-    m_robotContainer.driveFieldOrientedAnglularVelocity.schedule();
-    m_robotContainer.driveFieldOrientedDirectAngle.schedule();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-  
-    
+   // driveauto = m_robotContainer.getAutonomousCommand();
+   // driveauto.schedule();
+
   }
 
   @Override
@@ -111,11 +108,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-  // SmartDashboard.putNumber("test", 5);
-  if (driveauto.isScheduled()){ 
-      driveauto.cancel();
-  }
-  
+   SmartDashboard.putNumber("test", 5);
+   // driveauto.cancel();
 
    // if (m_autonomousCommand != null) {
     //  Auto.getAutonomousCommand().cancel();
@@ -125,7 +119,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putBoolean("Note loaded", Sensors.gameObject);
   }
 
   @Override

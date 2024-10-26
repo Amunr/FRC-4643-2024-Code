@@ -68,8 +68,8 @@ public class RobotContainer {
         // Configure the trigger bindings
 
         //Autonmous drive forward
-        
-        
+
+
         // AUTO COMMANDS
         //   Command intake =   new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::StartIntake),  
         //            new InstantCommand(m_IndexerSubystem::startIndexer),
@@ -79,7 +79,7 @@ public class RobotContainer {
         //            new InstantCommand(m_IndexerSubystem::reverseIndexer),
         //            new WaitUntilCommand(m_Sensors.shooterBeamBreakStatusINV),
         //            new InstantCommand(m_IndexerSubystem::stopIndexer));
-                   
+
         // Command shoot = new SequentialCommandGroup(new InstantCommand(m_IndexerSubystem::startIndexer),
         //         new WaitCommand(2),
         //         new InstantCommand(m_ShooterSubystem::stopShooter));
@@ -95,35 +95,31 @@ public class RobotContainer {
         // SmartDashboard.putString("Shooter", "OFF");
         //         SmartDashboard.putString("Indexer", "OFF");
 
-      
+
         //Drive Controls
         configureBindings();
 
-        
-        
 
-        drivebase.setDefaultCommand(
-                !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
-
-        
-
-    }
-   final Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-                () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),0.05 ),
-                () -> MathUtil.applyDeadband(driverXbox.getLeftY(),0.05),
+        Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
+                () -> MathUtil.applyDeadband(-driverXbox.getLeftY(),0.05 ),
+                () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),0.05),
                 () -> driverXbox.getRightX(),
                 () -> -driverXbox.getRightY());
-       final Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
+        Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
+                () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.05),
                 () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.05),
-                () -> MathUtil.applyDeadband(driverXbox.getLeftY(), 0.05),
                 () -> driverXbox.getRawAxis(4));
 
-       final Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
+        Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
                 () -> driverXbox.getLeftY(),
                 () -> driverXbox.getLeftX(),
                 () -> driverXbox.getRawAxis(2));
 
-    final Command driveLowAuto = drivebase.autoDrive(0.1, 0.1, 0, 0);
+        drivebase.setDefaultCommand(
+                !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
+        
+    }
+   // final Command driveLowAuto = drivebase.autoDrive(0.1, 0.1, 0, 0);
     /**
      * Use this method to define your trigger->command mappings. Triggers can be
      * created via the
@@ -156,7 +152,7 @@ public class RobotContainer {
                    new WaitUntilCommand(m_Sensors.shooterBeamBreakStatusINV),
                    new InstantCommand(m_IndexerSubystem::stopIndexer),
                    new InstantCommand(m_Sensors::yesGameobject)
-   
+
            )).onFalse(new SequentialCommandGroup(new InstantCommand(m_IntakeSubsystem::stopIntake),
            new InstantCommand(m_IndexerSubystem::stopIndexer))); 
                // Shoot the Ball
@@ -170,7 +166,7 @@ public class RobotContainer {
 
 
                 //MANUAL
-        
+
         // Stop Shooter Manual Command
         // new JoystickButton(operatorXbox, XboxController.Button.kB.value).onTrue(
         //         new InstantCommand(m_ShooterSubystem::stopShooter));
@@ -191,12 +187,12 @@ public class RobotContainer {
                 ));
         }
 
-        public Command getAutonomousCommand() {
-                return driveLowAuto;
-            }
-    
+      //  public Command getAutonomousCommand() {
+             //   return driveLowAuto;
+        //    }
+
     public void dataout () { 
-        
+
        }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
