@@ -101,25 +101,25 @@ public class RobotContainer {
 
 
         Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-                () -> MathUtil.applyDeadband(-driverXbox.getLeftY(),0.05 ),
-                () -> MathUtil.applyDeadband(-driverXbox.getLeftX(),0.05),
-                () -> driverXbox.getRightX(),
-                () -> -driverXbox.getRightY());
+                () -> MathUtil.applyDeadband(driverXbox.getLeftY()/ 0,0.05),
+                () -> MathUtil.applyDeadband(driverXbox.getLeftX() ,0.05),
+                () -> (driverXbox.getRightX()/2),
+                () -> (-driverXbox.getRightY()/2));
         Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
-                () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.05),
-                () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.05),
+                () -> MathUtil.applyDeadband(driverXbox.getLeftY(), 0.05),
+                () -> MathUtil.applyDeadband(driverXbox.getLeftX(), 0.05),
                 () -> driverXbox.getRawAxis(4));
-
         Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
-                () -> driverXbox.getLeftY(),
-                () -> driverXbox.getLeftX(),
+                () ->  driverXbox.getLeftY(),
+                () ->  driverXbox.getLeftX(),
                 () -> driverXbox.getRawAxis(2));
 
         drivebase.setDefaultCommand(
                 !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
         
     }
-   // final Command driveLowAuto = drivebase.autoDrive(0.1, 0.1, 0, 0);
+   final Command driveLowAuto = drivebase.autoDrive(0.1, 0.0, 0.0, 0.0);
+     final Command driveLowAng = drivebase.autoDriveAng(0.1, 0.0, 0.0);
     /**
      * Use this method to define your trigger->command mappings. Triggers can be
      * created via the
@@ -187,9 +187,20 @@ public class RobotContainer {
                 ));
         }
 
-      //  public Command getAutonomousCommand() {
-             //   return driveLowAuto;
-        //    }
+        Command shoot = new SequentialCommandGroup(new InstantCommand(m_ShooterSubystem::StartShooter),
+                        new WaitCommand(2), new InstantCommand(m_IndexerSubystem::startIndexer), new WaitCommand(3),
+                        new InstantCommand(m_ShooterSubystem::stopShooter),
+                        new InstantCommand(m_IndexerSubystem::stopIndexer), driveLowAng, driveLowAuto);
+
+          public Command getAutonomousCommand() {
+           return driveLowAuto;
+           }
+           public  Command getAutonomousCommandB(){
+                return driveLowAng;
+           }
+           public Command getAutonomousCommandC(){
+                return shoot;
+           }
 
     public void dataout () { 
 

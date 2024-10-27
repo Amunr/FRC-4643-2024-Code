@@ -31,6 +31,9 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  public Command autoA;
+  public Command autoB;
+  public Command autoShoot;
   // private  Command driveauto;
 
   /**
@@ -47,6 +50,9 @@ public class Robot extends TimedRobot {
           UsbCamera camera = CameraServer.startAutomaticCapture();
         ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
         driverTab.add("Camera", camera);
+        autoA = m_robotContainer.getAutonomousCommand();
+        autoB = m_robotContainer.getAutonomousCommandB();
+        autoShoot = m_robotContainer.getAutonomousCommandC();
     }
 
   /**
@@ -92,6 +98,9 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     //  Auto.getAutonomousCommand().schedule();
+    // autoA.schedule();
+    // autoB.schedule();
+    autoShoot.schedule();
   }
 
   /** This function is called periodically during autonomous. */
@@ -114,6 +123,17 @@ public class Robot extends TimedRobot {
    // if (m_autonomousCommand != null) {
     //  Auto.getAutonomousCommand().cancel();
    // }
+
+   if(autoA.isScheduled()){
+    autoA.cancel();
+   }
+   if(autoB.isScheduled()){
+    autoB.cancel();
+   }
+   if(autoShoot.isScheduled()){
+    autoShoot.cancel();
+   }
+
   }
 
   /** This function is called periodically during operator control. */

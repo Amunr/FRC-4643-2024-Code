@@ -57,6 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
       throw new RuntimeException(e);
     }
     swerveDrive.setHeadingCorrection(false);
+    swerveDrive.setMotorIdleMode(false);
     swerveDrive.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);
 
   }
@@ -78,20 +79,20 @@ public class DriveSubsystem extends SubsystemBase {
           swerveDrive.getMaximumVelocity()));
     });
   }
-  //Auto drive
-  // public Command autoDrive(double translationX, double translationY, double headingX,
-  //     float headingY) {
-  //   return run(() -> {
-  //     double xInput = Math.pow(translationX, 3); // Smooth controll out
-  //     double yInput = Math.pow(translationY, 3); // Smooth controll out
-  //     // Make the robot move
-  //     driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
-  //         headingX,
-  //         headingY,
-  //         swerveDrive.getYaw().getRadians(),
-  //         swerveDrive.getMaximumVelocity()));
-  //   });
-  // }
+ // Auto drive
+  public Command autoDrive(double translationX, double translationY, double headingX,
+      double headingY) {
+    return run(() -> {
+      double xInput = Math.pow(translationX, 3); // Smooth controll out
+      double yInput = Math.pow(translationY, 3); // Smooth controll out
+      // Make the robot move
+      driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
+          headingX,
+          headingY,
+          swerveDrive.getYaw().getRadians(),
+          swerveDrive.getMaximumVelocity()));
+    });
+  }
 
   // Anuglar Velocity
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
@@ -101,6 +102,17 @@ public class DriveSubsystem extends SubsystemBase {
       swerveDrive.drive(new Translation2d(translationX.getAsDouble() * swerveDrive.getMaximumVelocity(),
           translationY.getAsDouble() * swerveDrive.getMaximumVelocity()),
           -angularRotationX.getAsDouble() * swerveDrive.getMaximumAngularVelocity(),
+          true,
+          false);
+    });
+  }
+  public Command autoDriveAng(Double translationX, Double translationY,
+      Double angularRotationX) {
+    return run(() -> {
+      // Make the robot move
+      swerveDrive.drive(new Translation2d(translationX * swerveDrive.getMaximumVelocity(),
+          translationY * swerveDrive.getMaximumVelocity()),
+          -angularRotationX * swerveDrive.getMaximumAngularVelocity(),
           true,
           false);
     });
